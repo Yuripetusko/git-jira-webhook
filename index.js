@@ -63,6 +63,20 @@ app.post('/hooks/github/', githubMiddleware, (req, res) => {
         return res.status(200).end();
       }
     );
+  } else if (label.name === 'code review') {
+    jira.issue.transitionIssue(
+      {
+        issueKey: issueNumber,
+        transition: { id: 921 },
+      },
+      error => {
+        if (error) {
+          console.log(error);
+        }
+
+        return res.status(200).end();
+      }
+    );
   } else {
     return res.status(200).end();
   }
