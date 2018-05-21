@@ -12,7 +12,7 @@ const app = express();
 app.post('/hooks/github/', githubMiddleware, (req, res) => {
   // Only respond to github push events
   const eventName = req.headers['x-github-event'];
-  if (eventName != 'push') return res.status(200).end();
+  if (eventName != 'pull_request') return res.status(200).end();
 
   const payload = req.body;
   const repo = payload.repository.full_name;
