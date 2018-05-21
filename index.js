@@ -25,8 +25,12 @@ app.post('/hooks/github/', githubMiddleware, (req, res) => {
   const payload = req.body;
   const repo = payload.repository.full_name;
 
-  const title = payload.title;
-  const issueNumber = getIssueTagFromTitle(payload.title);
+  const pullRequest = payload.pull_request;
+
+  if (!pullRequest) return res.status(200).end();
+
+  const title = pullRequest.title;
+  const issueNumber = getIssueTagFromTitle(pullRequest.title);
   console.log(issueNumber, title);
 });
 
