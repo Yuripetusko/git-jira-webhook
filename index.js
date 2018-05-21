@@ -50,7 +50,7 @@ app.post('/hooks/github/', githubMiddleware, (req, res) => {
   }
 
   if (label === 'testing') {
-    jira.transitionIssue(issueNumber, 911, error => {
+    jira.transitionIssue(issueNumber, { id: 911 }, error => {
       if (error) {
         console.log(error);
       }
