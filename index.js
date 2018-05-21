@@ -9,6 +9,14 @@ const PORT = process.env.PORT || 5000;
 
 const app = express();
 
+const jiraTag = 'LIVE';
+const tagMatcher = new RegExp(`^${jiraTag}-\\d+`, 'i');
+
+const getIssueTagFromTitle = title => {
+  const matched = title.match(tagMatcher);
+  return matched && matched[0];
+};
+
 app.post('/hooks/github/', githubMiddleware, (req, res) => {
   // Only respond to github push events
   const eventName = req.headers['x-github-event'];
@@ -16,8 +24,10 @@ app.post('/hooks/github/', githubMiddleware, (req, res) => {
 
   const payload = req.body;
   const repo = payload.repository.full_name;
-  // const branch = payload.ref.split('/').pop();
-  console.log(payload);
+
+  const title = payload.title;
+  const issueNumber = getIssueTagFromTitle(payload.title);
+  console.log(issueNumber, title);
 });
 
 app
