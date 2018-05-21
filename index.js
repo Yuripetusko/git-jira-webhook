@@ -10,8 +10,7 @@ const JiraClient = require('jira-connector');
 const jira = new JiraClient({
   host: 'bridebook.atlassian.net',
   basic_auth: {
-    username: 'github-jira-bot@bridebook.co.uk',
-    password: 'Ce4vNoFJzY4a',
+    base64: process.env.JIRALOGIN,
   },
 });
 
@@ -53,7 +52,7 @@ app.post('/hooks/github/', githubMiddleware, (req, res) => {
     jira.issue.transitionIssue(
       {
         issueKey: issueNumber,
-        transition: { id: 911 },
+        transition: { id: process.env.TESTING_TRANSITION },
       },
       error => {
         if (error) {
@@ -67,7 +66,7 @@ app.post('/hooks/github/', githubMiddleware, (req, res) => {
     jira.issue.transitionIssue(
       {
         issueKey: issueNumber,
-        transition: { id: 921 },
+        transition: { id: process.env.REVIEW_TRANSITION },
       },
       error => {
         if (error) {
