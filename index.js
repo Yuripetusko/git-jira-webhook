@@ -5,12 +5,23 @@ const githubMiddleware = require('github-webhook-middleware')({
   limit: '1mb', // <-- optionally include the webhook json payload size limit, useful if you have large merge commits.  Default is '100kb'
 });
 
+const JiraApi = require('jira').JiraApi;
+
+const jira = new JiraApi(
+  'https',
+  'bridebook.atlassian.net',
+  '80',
+  'github-jira-bot@bridebook.co.uk',
+  'Ce4vNoFJzY4a',
+  '2.0.alpha1'
+);
+
 const PORT = process.env.PORT || 5000;
 
 const app = express();
 
 const jiraTag = 'LIVE';
-const tagMatcher = new RegExp(`^${jiraTag}-\\d+`, 'i');
+const tagMatcher = new RegExp(`^#?${jiraTag}-\\d+`, 'i');
 
 const getIssueTagFromTitle = title => {
   const matched = title.match(tagMatcher);
@@ -26,12 +37,29 @@ app.post('/hooks/github/', githubMiddleware, (req, res) => {
   const repo = payload.repository.full_name;
 
   const pullRequest = payload.pull_request;
+  const action = payload.action;
 
-  if (!pullRequest) return res.status(200).end();
+  if (!pullRequest || action !== 'labeled') return res.status(200).end();
 
+  const label = payload.label;
   const title = pullRequest.title;
   const issueNumber = getIssueTagFromTitle(pullRequest.title);
   console.log(issueNumber, title);
+  if (!issueNumber || !label) {
+    return res.status(200).end();
+  }
+
+  if (label === 'testing') {
+    jira.transitionIssue(issueNumber, 911, error => {
+      if (error) {
+        console.log(error);
+      }
+
+      return res.status(200).end();
+    });
+  } else {
+    return res.status(200).end();
+  }
 });
 
 app
