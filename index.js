@@ -10,7 +10,7 @@ const JiraClient = require('jira-connector');
 const jira = new JiraClient({
   host: 'jenjinstudios.atlassian.net',
   basic_auth: {
-    username: 'github-jira-bot@bridebook.co.uk',
+    username: 'github-jira-bot',
     password: 'Ce4vNoFJzY4a',
   },
 });
