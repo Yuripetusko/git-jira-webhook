@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 
 const jiraTag = 'LIVE';
-const tagMatcher = new RegExp(`^#?${jiraTag}-\\d+`, 'i');
+const tagMatcher = new RegExp(`^${jiraTag}-\\d+`, 'i');
 
 const getIssueTagFromTitle = title => {
   const matched = title.match(tagMatcher);
@@ -43,12 +43,12 @@ app.post('/hooks/github/', githubMiddleware, (req, res) => {
   const label = payload.label;
   const title = pullRequest.title;
   const issueNumber = getIssueTagFromTitle(pullRequest.title);
-  console.log(issueNumber, title);
+  console.log(issueNumber, label);
   if (!issueNumber || !label) {
     return res.status(200).end();
   }
 
-  if (label === 'testing') {
+  if (label.name === 'testing') {
     jira.issue.transitionIssue(
       {
         issueKey: issueNumber,
