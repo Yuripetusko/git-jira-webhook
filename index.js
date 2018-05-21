@@ -5,16 +5,15 @@ const githubMiddleware = require('github-webhook-middleware')({
   limit: '1mb', // <-- optionally include the webhook json payload size limit, useful if you have large merge commits.  Default is '100kb'
 });
 
-const JiraApi = require('jira').JiraApi;
+const JiraClient = require('jira-connector');
 
-const jira = new JiraApi(
-  'https',
-  'bridebook.atlassian.net',
-  '80',
-  'github-jira-bot@bridebook.co.uk',
-  'Ce4vNoFJzY4a',
-  '2.0.alpha1'
-);
+const jira = new JiraClient({
+  host: 'jenjinstudios.atlassian.net',
+  basic_auth: {
+    username: 'github-jira-bot@bridebook.co.uk',
+    password: 'Ce4vNoFJzY4a',
+  },
+});
 
 const PORT = process.env.PORT || 5000;
 
@@ -50,13 +49,19 @@ app.post('/hooks/github/', githubMiddleware, (req, res) => {
   }
 
   if (label === 'testing') {
-    jira.transitionIssue(issueNumber, { id: 911 }, error => {
-      if (error) {
-        console.log(error);
-      }
+    jira.issue.transitionIssue(
+      {
+        issueKey: issueNumber,
+        transition: { id: 911 },
+      },
+      error => {
+        if (error) {
+          console.log(error);
+        }
 
-      return res.status(200).end();
-    });
+        return res.status(200).end();
+      }
+    );
   } else {
     return res.status(200).end();
   }
