@@ -8,9 +8,9 @@ const githubMiddleware = require('github-webhook-middleware')({
 const JiraClient = require('jira-connector');
 
 const jira = new JiraClient({
-  host: 'jenjinstudios.atlassian.net',
+  host: 'bridebook.atlassian.net',
   basic_auth: {
-    username: 'github-jira-bot',
+    username: 'github-jira-bot@bridebook.co.uk',
     password: 'Ce4vNoFJzY4a',
   },
 });
