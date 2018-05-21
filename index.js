@@ -20,7 +20,8 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 
 const jiraTag = 'LIVE';
-const tagMatcher = new RegExp(`^${jiraTag}-\\d+`, 'i');
+const tagMatcher = new RegExp(`${jiraTag}-\\d+`, 'i');
+// const tagMatcher = new RegExp(`^#?${jiraTag}-\\d+`, 'i');
 
 const getIssueTagFromTitle = title => {
   const matched = title.match(tagMatcher);
