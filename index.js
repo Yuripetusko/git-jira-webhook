@@ -16,7 +16,7 @@ app.post('/hooks/github/', githubMiddleware, (req, res) => {
 
   const payload = req.body;
   const repo = payload.repository.full_name;
-  const branch = payload.ref.split('/').pop();
+  // const branch = payload.ref.split('/').pop();
   console.log(payload);
 });
 
